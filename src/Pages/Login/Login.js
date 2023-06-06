@@ -10,9 +10,11 @@ import axios from 'axios'
 import Typography from '@mui/material/Typography'
 import '@lottiefiles/lottie-player'
 import {useNavigate} from 'react-router-dom';
-
-
-
+import LinearProgress from '@mui/material/LinearProgress';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Send as SendIcon } from '@mui/icons-material';
+import BadgeIcon from '@mui/icons-material/Badge';
+import KeyIcon from '@mui/icons-material/Key';
 
 
 
@@ -20,21 +22,27 @@ function Login() {
 
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [Password, setPassword] = useState('');
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
+    
+    const [UsernameError, setUsernameError] = useState(false);
+    const [PasswordError, setPasswordError] = useState(false);
+    const [IsSubmitLoading, setIsSubmitLoading] = useState(false);
 
-    const handleLogin = () => {
-      if(username === ''){
-        setUsernameErrorMsg('Username is required');
-      }
-      else if(password === ''){
-        setPasswordErrorMsg('Password is required');
-      }
+
+
+    const handleLogin = async() => {
+      await setIsSubmitLoading(true);
+      if (username == '') {
+        setUsernameError(true);
+        setIsSubmitLoading(false);
+        return;
+      } 
       else{     
       const data = {
           username: username,
-          password: password
+          password: Password
       };
   
       axios({
@@ -46,15 +54,16 @@ function Login() {
           console.log(res);
             localStorage.setItem('role', res.data.role);
             localStorage.setItem('username', res.data.username);
+            localStorage.setItem('id', res.data.id);
             navigate('/Main')
       })
       .catch(err => {
           console.log(err);
       });
     }
-      console.log(username, password);
+      console.log(username, Password);
   };
-  
+  const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
 
   return (
     <>
@@ -75,14 +84,92 @@ function Login() {
       <Grid container spacing={2}>
         <Grid item xs={5}>
         <Grid item xs={12} style={{marginTop: '50px', marginBottom: '0px'}}>
-            <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Username" variant="outlined" onChange={(e) => {setUsername(e.target.value); setUsernameErrorMsg('')} } value={username} />      
+        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="default">VMS Login:</Typography>
+                <TextField
+                  id="username"
+                  label="Username"
+                  type="text"
+                  error={UsernameError}
+                  helperText={
+                    username.length > 10
+                      ? "Username should be a maximum of 10 characters"
+                      : UsernameError
+                      ? "Please enter a valid username"
+                      : username.length === 0
+                      ? "Username is required"
+                      : null
+                  }
+                  placeholder="Enter your Username"
+                  required
+                  value={username}
+                  onChange={(e)=>{setUsername(e.target.value); setUsernameError(false)}}
+                  style={{
+                    marginTop:'70px',
+                    marginLeft:'10px',
+                    width:'90%'
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start" >
+                          <BadgeIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  id="password"
+                  label="Password"
+                  type="text"
+                  hidden
+                  error={PasswordError}
+                  helperText={
+                    Password.length < 6
+                      ? "Password should be at least 6 characters long"
+                      : Password.length > 10
+                      ? "Password should be a maximum of 10 characters long"
+                      : !specialCharacters.test(Password)
+                      ? "Password should contain at least one special character"
+                      : PasswordError
+                      ? "Please enter a valid password"
+                      : Password.length === 0
+                      ? "Password is required"
+                      : null
+                  }
+                  placeholder="Enter your Password"
+                  required
+                  value={Password}
+                  onChange={(e)=>{setPassword(e.target.value); setPasswordError(false)}}
+                  style={{
+                    marginTop:'15px',
+                    marginLeft:'10px',
+                    width:'90%'
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start" >
+                          <KeyIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+             
+            {/* <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Username" variant="outlined" onChange={(e) => {setUsername(e.target.value); setUsernameErrorMsg('')} } value={username} />      
             {usernameErrorMsg?  <Typography variant="subtitle1" color="error">{usernameErrorMsg}</Typography> : null}
             <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Password" variant="outlined" onChange={(e) => {setPassword(e.target.value); setPasswordErrorMsg('')}} value={password} type="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" />
-            {passwordErrorMsg?  <Typography variant="subtitle1" color="error">{passwordErrorMsg}</Typography> : null}
+            {passwordErrorMsg?  <Typography variant="subtitle1" color="error">{passwordErrorMsg}</Typography> : null} */}
         </Grid>
-        <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleLogin}>
+        {/* <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleLogin}>
           Login
-        </Button>
+        </Button> */}
+           {IsSubmitLoading? 
+                <Grid sx={{ width: '90%', marginLeft:'10px' }}>
+                  <LinearProgress />
+                </Grid>
+                :
+                <Button onClick={handleLogin} style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'90%', height:'18%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
+                    Login
+                </Button>
+                }
         </Grid>
         <Divider orientation="vertical" flexItem>
     Login

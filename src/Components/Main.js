@@ -10,17 +10,21 @@ import { useNavigate } from 'react-router-dom';
 function Main() {
     const navigate = useNavigate()
     const [user, setUser] = useState('');
+    const [id, setId] = useState(0);
     const [role, setRole] = useState('');
     useEffect(() => {
-        let user = localStorage.getItem('user');
+        let user = localStorage.getItem('username');
         let role = localStorage.getItem('role');
+        let id = localStorage.getItem('id');
         if (!user || !role) {
             navigate('/login')
         } 
         else{        
-            setUser(JSON.parse(localStorage.getItem('user')))
-            setRole(JSON.parse(localStorage.getItem('role')));
+            setUser(localStorage.getItem('username'))
+            setRole(localStorage.getItem('role'));
+            setId(localStorage.getItem('id'));
         }
+        console.log(user, role);
     }, []);
 
 
