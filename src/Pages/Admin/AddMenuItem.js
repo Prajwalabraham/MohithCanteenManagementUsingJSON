@@ -93,7 +93,7 @@ function AddMenuItem() {
         console.log(name, description, price);
         axios({
             method:'post',
-            url: 'http://localhost:8080/api/menu/add',
+            url: 'http://localhost:8080/api/menu',
             data: {
                 name: name,
                 description: description,

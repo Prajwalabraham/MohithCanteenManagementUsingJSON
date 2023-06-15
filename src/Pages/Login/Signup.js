@@ -65,9 +65,9 @@ function Signup() {
     <Container maxWidth="lg" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
       <Paper style={{padding: '20px', borderRadius:'20px'}} elevation={5}>
     <Typography variant="h5" component="div" style={{textAlign: 'center'}}>
-      <b>Canteen Management System</b>
+      <b>CANTEEN MANAGEMENT SYSTEM</b>
     </Typography>
-    <Typography variant="h6" component="div" style={{textAlign: 'center'}}>Canteen Signup</Typography>
+    <Typography variant="h6" component="div" style={{fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}}>SIGNUP</Typography>
     <Box
       component="form"
       sx={{
@@ -84,7 +84,7 @@ function Signup() {
             <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Password" variant="outlined" onChange={(e) => {setPassword(e.target.value); setPasswordErrorMsg('')}} value={password} type="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" />
             {passwordErrorMsg?  <Typography variant="subtitle1" color="error">{passwordErrorMsg}</Typography> : null}
         </Grid>
-        <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleSignup}>
+        <Button style={{width: '310px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleSignup}>
           Signup
         </Button>
         </Grid>
@@ -92,7 +92,7 @@ function Signup() {
         <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_YnsM0o.json"  background="transparent"  speed="1"  style={{width: '300px', height: '300px'}} hover loop autoplay={true}></lottie-player>
         </Grid>
       </Grid>
-      <a href="/Login" style={{textDecoration: 'none'}}><Typography variant="subtitle1" color="default">Already have an account? Click here to <b>Login</b></Typography></a>
+      <a href="/Login" style={{textDecoration: 'none'}}><Typography sx={{ml:2}} variant="subtitle1" color="default">Already have an account? Click here to <b>Login</b></Typography></a>
     </Box>
     </Paper>
     </Container>

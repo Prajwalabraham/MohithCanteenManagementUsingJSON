@@ -18,7 +18,7 @@ import KeyIcon from '@mui/icons-material/Key';
 
 
 
-function Login() {
+function AdminLogin() {
 
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -32,44 +32,37 @@ function Login() {
 
 
 
-    const handleLogin = async() => {
+    const handleAdminLogin = async() => {
       await setIsSubmitLoading(true);
       if (username == '') {
         setUsernameError(true);
         setIsSubmitLoading(false);
         return;
       } 
-      else{    
-      let userData = {
-        username:username,
-        password:Password
-      }
+      else{     
+      const data = {
+          username: username,
+          password: Password
+      };
+  
       axios({
-        method:'post',
-        url: 'http://localhost:8080/api/login',
-        data: userData
+          method: 'post',
+          url: "http://localhost:8080/api/login",
+          data: data
       })
       .then(res => {
-        console.log(res);
-        alert(res.data)
-        if(res.status === 200){
-          localStorage.setItem('userID', res.data.userId)
-          localStorage.setItem('username', res.data.username)
-          navigate('/UserDashboard')
-        }
+          console.log(res);
+            localStorage.setItem('role', 'admin');
+            localStorage.setItem('username', res.data.username);
+            localStorage.setItem('id', res.data.id);
+            navigate('/Main')
       })
-      .catch(err => {          
-        console.log(err);
-        if (err.request.status===0) {
-          alert("Dumbo go change the path in the Backend Controller ")
-        }
-        else {
-          alert("Invalid Username or Password")
-        }
-      })
+      .catch(err => {
+          console.log(err);
+      });
     }
-    }
-
+      console.log(username, Password);
+  };
   const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
 
   return (
@@ -91,7 +84,7 @@ function Login() {
       <Grid container spacing={2}>
         <Grid item xs={5}>
         <Grid item xs={12} style={{marginTop: '50px', marginBottom: '10px'}}>
-        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black">LOGIN :</Typography>
+        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black">AdminLOGIN :</Typography>
                 <TextField
                   id="username"
                   label="Username"
@@ -165,16 +158,16 @@ function Login() {
             <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Password" variant="outlined" onChange={(e) => {setPassword(e.target.value); setPasswordErrorMsg('')}} value={password} type="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" />
             {passwordErrorMsg?  <Typography variant="subtitle1" color="error">{passwordErrorMsg}</Typography> : null} */}
         </Grid>
-        {/* <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleLogin}>
-          Login
+        {/* <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleAdminLogin}>
+          AdminLogin
         </Button> */}
            {IsSubmitLoading? 
                 <Grid sx={{ width: '10%', marginLeft:'100px' }}>
                   <LinearProgress />
                 </Grid>
                 :
-                <Button onClick={handleLogin} style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'100%', height:'15%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
-                    Login
+                <Button onClick={handleAdminLogin} style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'100%', height:'15%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
+                    AdminLogin
                 </Button>
                 }
         </Grid>
@@ -190,4 +183,4 @@ function Login() {
   )
 }
 
-export default Login
+export default AdminLogin
