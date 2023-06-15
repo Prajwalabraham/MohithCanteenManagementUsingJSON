@@ -89,6 +89,10 @@ function User() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.clear()
+    navigate('/Login')
+  }
   return (
     <>
       <AppBarComponent />
@@ -114,6 +118,9 @@ function User() {
       </Grid>
       <Button sx={{marginLeft:'100px',marginTop:'-100px', fontSize: '20px', fontWeight:'bold'}} onClick={()=>setIsOpen(true)} variant="outlined" color="primary">
         Checkout
+      </Button>
+      <Button  sx={{marginLeft:'100px',marginTop:'-100px', fontSize: '20px', fontWeight:'bold'}} onClick={handleLogout} variant="outlined" color="primary">
+        LogOut
       </Button>
       <Modal  
         open={isOpen}

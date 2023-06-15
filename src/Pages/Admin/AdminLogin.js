@@ -18,7 +18,7 @@ import KeyIcon from '@mui/icons-material/Key';
 
 
 
-function Login() {
+function AdminLogin() {
 
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -32,7 +32,7 @@ function Login() {
 
 
 
-    const handleLogin = async() => {
+    const handleAdminLogin = async() => {
       await setIsSubmitLoading(true);
       if (username == '') {
         setUsernameError(true);
@@ -52,7 +52,7 @@ function Login() {
       })
       .then(res => {
           console.log(res);
-            localStorage.setItem('role', res.data.role);
+            localStorage.setItem('role', 'admin');
             localStorage.setItem('username', res.data.username);
             localStorage.setItem('id', res.data.id);
             navigate('/Main')
@@ -84,7 +84,7 @@ function Login() {
       <Grid container spacing={2}>
         <Grid item xs={5}>
         <Grid item xs={12} style={{marginTop: '50px', marginBottom: '10px'}}>
-        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black">LOGIN :</Typography>
+        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black">AdminLOGIN :</Typography>
                 <TextField
                   id="username"
                   label="Username"
@@ -158,16 +158,16 @@ function Login() {
             <TextField style={{width: '100%', marginTop:'10px'}} id="outlined-basic" label="Password" variant="outlined" onChange={(e) => {setPassword(e.target.value); setPasswordErrorMsg('')}} value={password} type="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$" />
             {passwordErrorMsg?  <Typography variant="subtitle1" color="error">{passwordErrorMsg}</Typography> : null} */}
         </Grid>
-        {/* <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleLogin}>
-          Login
+        {/* <Button style={{width: '150px', borderRadius:'25px', marginTop: '10px', marginBottom: '0px', height:'50px'}} variant="contained" color="primary" onClick={handleAdminLogin}>
+          AdminLogin
         </Button> */}
            {IsSubmitLoading? 
                 <Grid sx={{ width: '10%', marginLeft:'100px' }}>
                   <LinearProgress />
                 </Grid>
                 :
-                <Button onClick={handleLogin} style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'100%', height:'15%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
-                    Login
+                <Button onClick={handleAdminLogin} style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'100%', height:'15%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
+                    AdminLogin
                 </Button>
                 }
         </Grid>
@@ -183,4 +183,4 @@ function Login() {
   )
 }
 
-export default Login
+export default AdminLogin
