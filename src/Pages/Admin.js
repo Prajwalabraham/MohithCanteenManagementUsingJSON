@@ -11,6 +11,12 @@ function Admin() {
   const handleClick = () => {
     navigate('/addMenuItem');
   }
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/login');
+  }
+  
   return (
     <>
       <AppBarComponent />
@@ -24,6 +30,9 @@ function Admin() {
         </Grid>
       <Button variant="contained" onClick={handleClick} sx={{background:'#000000'}} >
         Add Menu Item
+      </Button>
+      <Button variant="contained" onClick={handleLogout} sx={{background:'#000000'}} >
+      Logout
       </Button>
       </Container>
     </>

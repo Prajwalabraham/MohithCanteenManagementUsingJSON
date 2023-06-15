@@ -14,6 +14,13 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button'
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 
@@ -21,11 +28,14 @@ import axios from 'axios';
 
 
 export default function MenuCard({addToCart, props}) {
+  const [success, setSuccess] = React.useState(false);
+  const [successMsg, setSuccessMsg] = React.useState('');
+  const [severity, setSeverity] = React.useState('');
   
   const handleAddToCart = async() => {
     // axios({
     //   method:'post',
-    //   url: 'http://localhost:8080/api/orders/add',
+    //   url: 'http://localhost:8080/api/orders/',
     //   data: {
     //     menuId: props?.id,
     //     quantity: 1,
@@ -38,11 +48,16 @@ export default function MenuCard({addToCart, props}) {
     // })
     // .then(res => {
     //   console.log(res);
-    //   alert('Item added to cart');
+    //   setSuccess(true);
+    //   setSuccessMsg('Item added to cart');
+    //   setSeverity('success');
+    
     // })
     // .catch(err => {
     //   console.log(err);
-    //   alert('Something went wrong');
+    //   setSuccess(true);
+    //   setSuccessMsg('Something went wrong');
+    //   setSeverity('error');
     // })
 
     const newItem = {
@@ -57,7 +72,21 @@ export default function MenuCard({addToCart, props}) {
     await addToCart(newItem);
   }
 
+    
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+  };
   return (
+    <>
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+      </Snackbar>
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         action={
@@ -92,5 +121,6 @@ export default function MenuCard({addToCart, props}) {
         </IconButton>
       </CardActions>
     </Card>
+    </>
   );
 }

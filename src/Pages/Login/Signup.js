@@ -9,6 +9,13 @@ import axios from 'axios'
 import Typography from '@mui/material/Typography'
 import '@lottiefiles/lottie-player'
 import {useNavigate} from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 
@@ -21,7 +28,10 @@ function Signup() {
     const [password, setPassword] = useState('');
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
-
+    const [success, setSuccess] = React.useState(false);
+    const [successMsg, setSuccessMsg] = React.useState('');
+    const [severity, setSeverity] = React.useState('');
+    
       const handleSignup = () => {
         if(username === ''){
           setUsernameErrorMsg('Username is required');
@@ -41,27 +51,52 @@ function Signup() {
         })
         .then(res => {
           console.log(res);
-          alert(res.data)
-          if(res.status === 200){
+
+          if(res.status === 201){
+            setSuccess(true);
+            setSeverity('success');
+            setSuccessMsg('Signup Successful');
             localStorage.setItem('userID', res.data.userId)
             localStorage.setItem('username', res.data.username)
-            navigate('/UserDashboard')
+            localStorage.setItem('role', res.data.role)
+            navigate('/Main')
           }
         })
         .catch(err => {
           console.log(err);
           if (err.request.status===0) {
+            setSuccess(true);
+            setSeverity('error');
+            setSuccessMsg('Dumbo go change the path in the Backend Controller');
+          
             alert("Dumbo go change the path in the Backend Controller ")
           }
           else {
+            setSuccess(true);
+            setSeverity('error');
+            setSuccessMsg('Invalid Username or Password');
             alert("Invalid Username or Password")
           }
         })
       }
       }
       
+    
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setSuccess(false);
+    };
 
   return (
+    <>
+        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+      </Snackbar>
     <Container maxWidth="lg" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
       <Paper style={{padding: '20px', borderRadius:'20px'}} elevation={5}>
     <Typography variant="h5" component="div" style={{textAlign: 'center'}}>
@@ -96,6 +131,7 @@ function Signup() {
     </Box>
     </Paper>
     </Container>
+    </>
   )
 }
 

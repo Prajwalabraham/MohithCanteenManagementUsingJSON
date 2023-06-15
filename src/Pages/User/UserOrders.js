@@ -13,7 +13,7 @@ function UserOrders() {
     React.useEffect(() => {
         axios({
             method:'get',
-            url: `http://localhost:8080/api/orders/${localStorage.getItem('id')}`,
+            url: `http://localhost:8080/api/orders/${localStorage.getItem('username')}`,
         })
         .then((response) => {
             setMenuItems(response.data);

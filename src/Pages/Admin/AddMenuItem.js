@@ -12,6 +12,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container } from '@mui/material'
 import AppBarComponent from './../../Components/AppBarComponent';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 
@@ -87,8 +93,10 @@ function AddMenuItem() {
     const [price, setPrice] = React.useState('');
     const [imageURL, setImageURL] = React.useState('');
     const [IsSubmitLoading, setIsSubmitLoading] = React.useState(false);
-
-
+    const [success, setSuccess] = React.useState(false);
+    const [successMsg, setSuccessMsg] = React.useState('');
+    const [severity, setSeverity] = React.useState('');
+    
     const handleAddMenu = async()=>{
         console.log(name, description, price);
         axios({
@@ -103,14 +111,46 @@ function AddMenuItem() {
         })
         .then((res)=>{
             console.log(res);
+            setSuccess(true);
+            setSuccessMsg('Menu added successfully!!');
+            setSeverity('success');
+            setIsOpen(false);
+            setName('');
+            setDescription('');
+            setPrice('');
+            setImageURL('');
+            window.location.reload();
+        
         })
         .catch((err)=>{
             console.log(err);
+            setSuccess(true);
+            setSuccessMsg('Error occurred while adding menu!!');
+            setSeverity('error');
+            setIsOpen(false);
+            setName('');
+            setDescription('');
+            setPrice('');
+            setImageURL('');
         })
     }
 
+    
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setSuccess(false);
+    };
+
   return (
     <>
+    <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+    </Snackbar>
     <AppBarComponent/>
     <Container maxWidth="lg">
     <h3>Add Menu Item</h3>

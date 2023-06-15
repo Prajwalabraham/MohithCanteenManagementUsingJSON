@@ -14,6 +14,13 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button'
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 
@@ -22,7 +29,10 @@ import axios from 'axios';
 
 export default function UserOrdersCard({props}) {
     console.log(props);
-  
+    const [success, setSuccess] = React.useState(false);
+    const [successMsg, setSuccessMsg] = React.useState('');
+    const [severity, setSeverity] = React.useState('');
+    
   const handleAddToCart = () => {
     console.log(props?.id);
     // axios({
@@ -40,15 +50,36 @@ export default function UserOrdersCard({props}) {
     // })
     // .then(res => {
     //   console.log(res);
-    //   alert('Item added to cart');
+    //   setSuccess(true);
+    //   setSuccessMsg('Item added to cart');
+    //   setSeverity('success');
+    
     // })
     // .catch(err => {
     //   console.log(err);
-    //   alert('Something went wrong');
+    //   setSuccess(true);
+    //   setSuccessMsg('Something went wrong');
+    //   setSeverity('error');
+    
     // })
 
   }
+  
+    
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+  };
   return (
+    <>
+        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+      </Snackbar>
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader
         action={
@@ -67,6 +98,8 @@ export default function UserOrdersCard({props}) {
 
       <CardContent>
         <Typography variant="h5" color="text.secondary">{"₹"+props?.menuPrice}</Typography>
+        <Typography variant="h5" color="text.secondary">{"qty:"+props?.quantity}</Typography>
+        <Typography variant="h5" color="text.secondary">{"₹"+props?.price}</Typography>
         <br/>
         <Typography variant="body2" color="text.secondary">
           {props?.menuDescription}
@@ -83,5 +116,6 @@ export default function UserOrdersCard({props}) {
         </IconButton>
       </CardActions>
     </Card>
+    </>
   );
 }

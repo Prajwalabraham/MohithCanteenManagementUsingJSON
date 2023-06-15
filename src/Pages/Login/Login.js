@@ -15,6 +15,14 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { Send as SendIcon } from '@mui/icons-material';
 import BadgeIcon from '@mui/icons-material/Badge';
 import KeyIcon from '@mui/icons-material/Key';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
 
 
 
@@ -29,6 +37,10 @@ function Login() {
     const [UsernameError, setUsernameError] = useState(false);
     const [PasswordError, setPasswordError] = useState(false);
     const [IsSubmitLoading, setIsSubmitLoading] = useState(false);
+    const [success, setSuccess] = React.useState(false);
+    const [successMsg, setSuccessMsg] = React.useState('');
+    const [severity, setSeverity] = React.useState('');
+    
 
 
 
@@ -51,19 +63,32 @@ function Login() {
       })
       .then(res => {
         console.log(res);
-        alert(res.data)
+        setIsSubmitLoading(false);
+        setSuccess(true);
+        setSeverity('success');
+        setSuccessMsg('Login Successful');
         if(res.status === 200){
           localStorage.setItem('userID', res.data.userId)
           localStorage.setItem('username', res.data.username)
-          navigate('/UserDashboard')
+          localStorage.setItem('role', res.data.role)
+          navigate('/Main')
         }
       })
-      .catch(err => {          
+      .catch(async err => {          
         console.log(err);
         if (err.request.status===0) {
+          setIsSubmitLoading(false);
+          await setSuccess(true);
+          await setSeverity('error');
+          setSuccessMsg('Dumbo go change the path in the Backend Controller ');
           alert("Dumbo go change the path in the Backend Controller ")
+        
         }
         else {
+          setIsSubmitLoading(false);
+          await setSuccess(true);
+          await setSeverity('error');
+          setSuccessMsg('Invalid Username or Password');
           alert("Invalid Username or Password")
         }
       })
@@ -72,8 +97,22 @@ function Login() {
 
   const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
 
+  
+    
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+  };
   return (
     <>
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+      </Snackbar>
     <Container maxWidth="lg" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
       <Paper style={{padding: '20px', borderRadius:'20px'}} elevation={5}>
     <Typography variant="h5" component="div" style={{textAlign: 'center'}}>

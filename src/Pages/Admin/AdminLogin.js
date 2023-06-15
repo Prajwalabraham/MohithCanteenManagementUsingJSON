@@ -45,21 +45,11 @@ function AdminLogin() {
           password: Password
       };
   
-      axios({
-          method: 'post',
-          url: "http://localhost:8080/api/login",
-          data: data
-      })
-      .then(res => {
-          console.log(res);
+      if (username==='mohithcp2002@gmail.com' && Password === 'Mohith@2002') {
             localStorage.setItem('role', 'admin');
-            localStorage.setItem('username', res.data.username);
-            localStorage.setItem('id', res.data.id);
+            localStorage.setItem('username', "mohithcp2002@gmail.com");
             navigate('/Main')
-      })
-      .catch(err => {
-          console.log(err);
-      });
+          }
     }
       console.log(username, Password);
   };

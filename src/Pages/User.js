@@ -20,6 +20,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 
 
@@ -31,13 +38,14 @@ function User() {
   const [total, setTotal] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
   const [IsSubmitLoading, setIsSubmitLoading] = React.useState(false);
-
+  const [success, setSuccess] = React.useState(false);
+  const [successMsg, setSuccessMsg] = React.useState('');
+  const [severity, setSeverity] = React.useState('');
+  
   const addToCart = (item) => {
     console.log(item);
     setCartItems((prevItems) => [...prevItems, item]);
     setTotal((prevTotal) => prevTotal + item.menuPrice);
-    console.log(cartItems);
-    console.log(total);
   };
 
 
@@ -68,6 +76,7 @@ function User() {
           menuId: item.id,
           quantity: item.quantity,
           userId: item.userId,
+          price:total,
           menuName: item.menuName,
           menuDescription: item.menuDescription,
           menuPrice: item.quantity * item.menuPrice,
@@ -81,20 +90,66 @@ function User() {
         setIsOpen(false);
         setCartItems([]);
         setTotal(0);
+        setSuccess(true);
+        setSuccessMsg('Order Placed Successfully');
+        setSeverity('success');
       })
       .catch(err => {
         console.log(err);
         setIsSubmitLoading(false);
+        setIsOpen(false);
+        setCartItems([]);
+        setTotal(0);
+        setSuccess(true);
+        setSuccessMsg('Order was not Placed');
+        setSeverity('error');
       })
     }
   }
+
+  React.useEffect(() => {
+    calculateTotal();
+  }, [cartItems]);
+
+  const calculateTotal = () => {
+    let totalPrice = 0;
+    for (const item of cartItems) {
+      totalPrice += item.quantity * item.menuPrice;
+    }
+    setTotal(totalPrice);
+  };
+
+  const updateQuantity = (index, value) => {
+    setCartItems((prevItems) => {
+      const newItems = [...prevItems];
+      newItems[index].quantity = value;
+      return newItems;
+    });
+  };
 
   const handleLogout = () => {
     localStorage.clear()
     navigate('/Login')
   }
+
+  
+    
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSuccess(false);
+  };
+
+  let totalPrice = 0;
   return (
     <>
+        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
+        {successMsg}
+      </Alert>
+      </Snackbar>
       <AppBarComponent />
       <h2 style={{textAlign: 'left', padding: 20, marginLeft:'20px'}}>Canteen Menu:</h2>
       <Button variant="contained" onClick={()=>navigate('/userOrders')} sx={{background:'#000000', marginLeft:'100px',marginBottom:'10px', marginTop:'0px', fontSize: '20px', fontWeight:'bold'}}>
@@ -142,6 +197,7 @@ function User() {
         </TableHead>
         <TableBody>
           {cartItems.map((row, index) => {
+            console.log(total);
             return(
             <TableRow>
               <TableCell>{row.menuName}</TableCell>
@@ -150,13 +206,7 @@ function User() {
                 label="Quantity"
                 value={row.quantity}
                 type='number'
-                onChange={(e)=>{
-                  setCartItems((prevItems) => {
-                    const newItems = [...prevItems];
-                    newItems[index].quantity = e.target.value;
-                    return newItems;
-                  });
-                }}
+                onChange={(e) => updateQuantity(index, e.target.value)}
                 
               /></TableCell>
               <TableCell align="right">{row.quantity * row.menuPrice}</TableCell>
