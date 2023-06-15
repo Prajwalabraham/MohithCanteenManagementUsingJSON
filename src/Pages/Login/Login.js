@@ -39,30 +39,37 @@ function Login() {
         setIsSubmitLoading(false);
         return;
       } 
-      else{     
-      const data = {
-          username: username,
-          password: Password
-      };
-  
+      else{    
+      let userData = {
+        username:username,
+        password:Password
+      }
       axios({
-          method: 'post',
-          url: "http://localhost:8080/api/login",
-          data: data
+        method:'post',
+        url: 'http://localhost:8080/api/login',
+        data: userData
       })
       .then(res => {
-          console.log(res);
-            localStorage.setItem('role', res.data.role);
-            localStorage.setItem('username', res.data.username);
-            localStorage.setItem('id', res.data.id);
-            navigate('/Main')
+        console.log(res);
+        alert(res.data)
+        if(res.status === 200){
+          localStorage.setItem('userID', res.data.userId)
+          localStorage.setItem('username', res.data.username)
+          navigate('/UserDashboard')
+        }
       })
-      .catch(err => {
-          console.log(err);
-      });
+      .catch(err => {          
+        console.log(err);
+        if (err.request.status===0) {
+          alert("Dumbo go change the path in the Backend Controller ")
+        }
+        else {
+          alert("Invalid Username or Password")
+        }
+      })
     }
-      console.log(username, Password);
-  };
+    }
+
   const specialCharacters = /[!@#$%^&*(),.?":{}|<>]/;
 
   return (

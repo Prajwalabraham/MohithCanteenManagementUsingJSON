@@ -21,42 +21,45 @@ function Signup() {
     const [password, setPassword] = useState('');
     const [usernameErrorMsg, setUsernameErrorMsg] = useState('');
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('');
-    const handleSignup = () => {
-      if(username === ''){
-        setUsernameErrorMsg('Username is required');
-      }
-      else if(password === ''){
-        setPasswordErrorMsg('Password is required');
-      }
-      else{  
-      const data = {
-          username: username,
-          password: password
-      };
-  
-      axios({
-          method: 'post',
-          url: "http://localhost:8080/api/signup",
-          data: data
-      })
-      .then(res => {
+
+      const handleSignup = () => {
+        if(username === ''){
+          setUsernameErrorMsg('Username is required');
+        }
+        else if(password === ''){
+          setPasswordErrorMsg('Password is required');
+        }
+        else{  
+        let userData = {
+          username:username,
+          password:password
+        }
+        axios({
+          method:'post',
+          url: 'http://localhost:8080/api/signup',
+          data: userData
+        })
+        .then(res => {
           console.log(res);
-          if(res.data.status === 201){
-            navigate('/Login')
+          alert(res.data)
+          if(res.status === 200){
+            localStorage.setItem('userID', res.data.userId)
+            localStorage.setItem('username', res.data.username)
+            navigate('/UserDashboard')
           }
-      })
-      .catch(err => {
-        if (err.response.status === 406) {
-          setUsernameErrorMsg('Username already exists');
-        } 
-          
-        
+        })
+        .catch(err => {
           console.log(err);
-      });
-    }
-      console.log(username, password);
-  };
-  
+          if (err.request.status===0) {
+            alert("Dumbo go change the path in the Backend Controller ")
+          }
+          else {
+            alert("Invalid Username or Password")
+          }
+        })
+      }
+      }
+      
 
   return (
     <Container maxWidth="lg" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
