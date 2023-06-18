@@ -50,6 +50,7 @@ function User() {
 
 
   React.useEffect(() => {
+    console.log(localStorage.getItem('id'))
     axios({
       method:'get',
       url: 'http://localhost:8080/api/menu',
@@ -64,46 +65,58 @@ function User() {
   }, []);
 
   const handleSubmit = () => {
+    console.log(cartItems)
+    if(cartItems.length<0 || total===0){
+      setSeverity('error')
+      setSuccessMsg('No items in the Cart')
+      setSuccess(true)
+      return
+    }
+    else{
     setIsSubmitLoading(true);
-
     for (let index = 0; index < cartItems.length; index++) {
-      let item = cartItems[index];
-      console.log(item);
-      axios({
-        method:'post',
-        url: 'http://localhost:8080/api/orders/add',
-        data: { 
-          menuId: item.id,
-          quantity: item.quantity,
-          userId: item.userId,
-          price:total,
-          menuName: item.menuName,
-          menuDescription: item.menuDescription,
-          menuPrice: item.quantity * item.menuPrice,
-          image: item.image,
-          username:localStorage.getItem('username'),
-        }
-      })
-      .then(res => {
-        console.log(res);
-        setIsSubmitLoading(false);
-        setIsOpen(false);
-        setCartItems([]);
-        setTotal(0);
-        setSuccess(true);
-        setSuccessMsg('Order Placed Successfully');
-        setSeverity('success');
-      })
-      .catch(err => {
-        console.log(err);
-        setIsSubmitLoading(false);
-        setIsOpen(false);
-        setCartItems([]);
-        setTotal(0);
-        setSuccess(true);
-        setSuccessMsg('Order was not Placed');
-        setSeverity('error');
-      })
+      setTimeout(() => {
+        let item = cartItems[index];
+        console.log(item);
+        axios({
+          method:'post',
+          url: 'http://localhost:8080/api/orders/add',
+          data: { 
+            menuId: item.id,
+            quantity: item.quantity,
+            userId: item.userId,
+            price: total,
+            menuName: item.menuName,
+            menuDescription: item.menuDescription,
+            menuPrice: item.quantity * item.menuPrice,
+            image: item.image,
+            username: localStorage.getItem('username'),
+          }
+        })
+        .then(res => {
+          console.log(res);
+          setIsSubmitLoading(false);
+          setIsOpen(false);
+          setCartItems([]);
+          setTotal(0);
+          setSuccess(true);
+          setSuccessMsg('Order Placed Successfully');
+          setSeverity('success');
+        })
+        .catch(async err => {
+          console.log(err);
+          setIsSubmitLoading(false);
+          setIsOpen(false);
+          setCartItems([]);
+          setTotal(0);
+          setSuccess(true);
+          await setSeverity('error');
+          setSuccessMsg('Order was not Placed');
+        });
+      }, index * 1000);
+    }
+    
+    setIsSubmitLoading(false);
     }
   }
 

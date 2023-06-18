@@ -51,11 +51,14 @@ const columns = [
 
 
 const handleDelete = (id) => {
+  console.log(id)
     axios
       .delete(`http://localhost:8080/api/menu/${id}`)
       .then((response) => {
         console.log('Menu item deleted successfully!');
         // Handle any additional logic or UI updates
+        window.location.reload()
+        alert("Menu Item Deleted successfully")
       })
       .catch((error) => {
         console.error('Error occurred while deleting menu item:', error);

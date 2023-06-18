@@ -7,6 +7,7 @@ import axios from 'axios';
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom';
 import UserOrdersCard from './../../Components/UserOrdersCard';
+import Typography from '@mui/material/Typography'
 
 function UserOrders() {
     const [menuItems, setMenuItems] = React.useState([]);
@@ -24,6 +25,8 @@ function UserOrders() {
         })
     }, []);
 
+    let total = 0;
+
   return (
     <>
     <AppBarComponent />
@@ -33,6 +36,11 @@ function UserOrders() {
         marginTop:'-100px'
       }}>
         {menuItems?.map((item, index) => {
+          const subtotal = item?.menuPrice * item?.quantity || 0;
+
+          // Add the subtotal to the total
+          total += subtotal;
+          console.log(total)
         return(
         <Grid key={index} sx={{
           padding: 2,
@@ -42,6 +50,7 @@ function UserOrders() {
            <UserOrdersCard props={item} />
         </Grid>
       )})}
+      <Typography variant="h5" color="black"> Total: {total}</Typography>
       </Grid>
     </>
   

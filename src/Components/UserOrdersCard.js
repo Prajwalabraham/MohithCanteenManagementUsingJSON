@@ -99,22 +99,14 @@ export default function UserOrdersCard({props}) {
       <CardContent>
         <Typography variant="h5" color="text.secondary">{"₹"+props?.menuPrice}</Typography>
         <Typography variant="h5" color="text.secondary">{"qty:"+props?.quantity}</Typography>
-        <Typography variant="h5" color="text.secondary">{"₹"+props?.price}</Typography>
+        <Typography variant="h5" color="text.secondary">
+          {"₹" + (props?.menuPrice * props?.quantity || 0)}
+        </Typography>
         <br/>
         <Typography variant="body2" color="text.secondary">
           {props?.menuDescription}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-            <Button variant="outlined" color="primary" onClick={handleAddToCart}>
-                Buy Now
-            </Button>
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
     </Card>
     </>
   );
