@@ -158,7 +158,7 @@ function User() {
   let totalPrice = 0;
   return (
     <>
-        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
       <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
         {successMsg}
       </Alert>
