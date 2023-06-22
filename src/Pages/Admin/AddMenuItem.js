@@ -21,50 +21,70 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70, hidden: true, defaultVisible:false },
-  { field: 'name', headerName: 'Menu Name', width: 150 },
-  { field: 'description', headerName: 'Description', width: 200 },
-  {
-    field: 'price',
-    headerName: 'Price',
-    type: 'number',
-    width: 100,
-  },
-  { field: 'createdAt', headerName: 'Created Date', type: 'number', width: 100 },
-  { field: 'image', headerName: 'Image', width: 250 },
-  {
-    field: 'delete',
-    headerName: 'Delete',
-    width: 100,
-    renderCell: (params) => (
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => handleDelete(params.row.id)}
-      >
-        Delete
-      </Button>
-    ),
-  },
-];
 
+  
+const handleEdit = (id) => {
+  axios
+    .put(`http://localhost:8080/api/menu/get/${id}`)
+    .then((response) => {
+      console.log(response);
+      console.log('Menu item deleted successfully!');
+      alert('Successfully Edited')
+      // Handle any additional logic or UI updates
+    })
+    .catch((error) => {
+      console.log(error);
+      console.error('Error occurred while deleting menu item:', error);
+      // Handle error and display appropriate error message
+      alert(error.message)
+    });
+};
 
-const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:8080/api/menu/${id}`)
-      .then((response) => {
-        console.log('Menu item deleted successfully!');
-        // Handle any additional logic or UI updates
-      })
-      .catch((error) => {
-        console.error('Error occurred while deleting menu item:', error);
-        // Handle error and display appropriate error message
-      });
-  };
 
 function AddMenuItem() {
 
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70, hidden: true, defaultVisible:false },
+    { field: 'name', headerName: 'Menu Name', width: 150 },
+    { field: 'description', headerName: 'Description', width: 200 },
+    {
+      field: 'price',
+      headerName: 'Price',
+      type: 'number',
+      width: 100,
+    },
+    { field: 'createdAt', headerName: 'Created Date', type: 'number', width: 100 },
+    { field: 'image', headerName: 'Image', width: 250 },
+    {
+      field: 'delete',
+      headerName: 'Delete',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => handleDelete(params.row.id)}
+        >
+          Delete
+        </Button>
+      ),
+    },
+    {
+      field: 'edit',
+      headerName: 'Edit',
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleEdit(params.row.id)}
+        >
+          Edit
+        </Button>
+      ),
+    },
+  ];
+  
     const navigate = useNavigate();
 
     const [rows, setRows] = React.useState([]);
@@ -86,8 +106,9 @@ function AddMenuItem() {
             console.log(err);
         })
         }, []);
-
+      const [id, setId] = React.useState('');
     const [isOpen, setIsOpen] = React.useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = React.useState(false);
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [price, setPrice] = React.useState('');
@@ -135,7 +156,77 @@ function AddMenuItem() {
         })
     }
 
+    const handleEdit = (id) => {
+      axios
+        .get(`http://localhost:8080/api/menu/get/${id}`)
+        .then((response) => {
+          console.log(response);
+          setName(response.data.name);
+          setDescription(response.data.description);
+          setPrice(response.data.price);
+          setImageURL(response.data.imageURL);
+          setId(response.data.id);
+          setIsDeleteOpen(true);
+          // Handle any additional logic or UI updates
+        })
+        .catch((error) => {
+          console.log(error);
+          console.error('Error occurred while deleting menu item:', error);
+          // Handle error and display appropriate error message
+          alert(error.message)
+        });
+    };
+
+    const handleDelete = (id) => {
+      axios
+        .delete(`http://localhost:8080/api/menu/${id}`)
+        .then((response) => {
+          console.log('Menu item deleted successfully!');
+          // Handle any additional logic or UI updates
+        })
+        .catch((error) => {
+          console.error('Error occurred while deleting menu item:', error);
+          // Handle error and display appropriate error message
+        });
+    };
     
+
+    const handleEditMenu = () => {
+      console.log(id, name, description, price);
+      axios({
+          method:'put',
+          url: `http://localhost:8080/api/menu/${id}`,
+          data: {
+              id,
+              name,
+              description,
+              price,
+              imageURL
+          }
+      })
+        .then((response) => {
+          console.log(response);
+          console.log('Menu item deleted successfully!');
+          alert('Successfully Edited')
+          setSuccessMsg('Menu edited successfully!!');
+          setSeverity('success');
+          setIsDeleteOpen(false);
+          setName('');
+          setSuccess(true);
+          setDescription('');
+          setPrice('');
+          setImageURL('');
+          window.location.reload();
+          // Handle any additional logic or UI updates
+        })
+        .catch((error) => {
+          console.log(error);
+          console.error('Error occurred while deleting menu item:', error);
+          // Handle error and display appropriate error message
+          alert(error.message)
+        });
+    };
+
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
         return;
@@ -185,7 +276,7 @@ function AddMenuItem() {
                   id="name"
                   label="Name"
                   type="text"
-                  placeholder="Enter the OTP"
+                  placeholder="Enter the Name"
                   required
                   value={name}
                   onChange={(e)=>{setName(e.target.value)}}
@@ -245,6 +336,83 @@ function AddMenuItem() {
                 :
                 <Button onClick={handleAddMenu}  style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'90%', height:'8%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
                     Add Menu Item
+                </Button>
+                }
+        </Box>
+    </Modal>
+    <Modal  
+        open={isDeleteOpen}
+        onClose={()=>setIsDeleteOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        style={{display:'flex', justifyContent:'center', alignItems:'center'}}
+      >
+        <Box style={{background: '#ffffff', width:'80%', height: '90vh', display: 'flex', flexDirection: 'column', justifyContent:'center', alignItems: 'center', boxSizing:'border-box', borderRadius:'25px' }}>
+          <Typography variant="h5" color="default">Enter the Menu Details to EDIT</Typography>
+          <TextField
+                  id="name"
+                  label="Name"
+                  type="text"
+                  placeholder="Enter the Name"
+                  required
+                  value={name}
+                  onChange={(e)=>{setName(e.target.value)}}
+                  style={{
+                    marginTop:'70px',
+                    marginLeft:'10px',
+                    width:'90%'
+                  }}
+                /> 
+                <TextField
+                id="description"
+                label="Description"
+                multiline
+                type="text"
+                placeholder="Enter the Description"
+                required
+                value={description}
+                onChange={(e)=>{setDescription(e.target.value)}}
+                style={{
+                  marginTop:'10px',
+                  marginLeft:'10px',
+                  width:'90%'
+                }}
+              /> 
+              <TextField
+              id="Price"
+              label="Price"
+              type="number"
+              placeholder="Enter the Price"
+              required
+              value={price}
+              onChange={(e)=>{setPrice(e.target.value)}}
+              style={{
+                marginTop:'10px',
+                marginLeft:'10px',
+                width:'90%'
+              }}
+            />
+            {/* <TextField
+              id="image"
+              label="Image URl"
+              type="text"
+              placeholder="Enter the Image URL"
+              required
+              value={imageURL}
+              onChange={(e)=>{setImageURL(e.target.value)}}
+              style={{
+                marginTop:'10px',
+                marginLeft:'10px',
+                width:'90%'
+              }}
+            /> */}
+                {IsSubmitLoading? 
+                <Grid sx={{ width: '90%', marginLeft:'10px' }}>
+                  <LinearProgress />
+                </Grid>
+                :
+                <Button onClick={handleEditMenu}  style={{marginLeft:'10px', marginTop:'20px', borderRadius:'20px', width:'90%', height:'8%'}} variant="contained" color="primary" endIcon={<SendIcon />}>
+                    Edit Menu Item
                 </Button>
                 }
         </Box>

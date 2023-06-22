@@ -16,21 +16,16 @@ function Main() {
         let user = localStorage.getItem('username');
         let role = localStorage.getItem('role');
         let id = localStorage.getItem('id');
-        if (!user || !role) {
-            navigate('/login')
-        } 
-        else{        
-            setUser(localStorage.getItem('username'))
-            setRole(localStorage.getItem('role'));
-            setId(localStorage.getItem('id'));
-        }
         console.log(user, role);
+        setRole(role);
+        setId(id);
+        setUser(user);
     }, []);
 
 
   return (
     <>
-    {role==='admin'?<Admin/>:<User/>}
+    {role=='admin' ? <Admin/> : <User/> }
     </>
   )
 }

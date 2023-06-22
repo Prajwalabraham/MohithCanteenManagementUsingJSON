@@ -5,7 +5,7 @@ import Main from './Components/Main';
 import AddMenuItem from './Pages/Admin/AddMenuItem';
 import UserOrders from './Pages/User/UserOrders';
 import AdminLogin from './Pages/Admin/AdminLogin';
-
+import User from '../src/Pages/User';
 function App() {
   return (
   <>
@@ -15,6 +15,7 @@ function App() {
         <Route path="/Signup" element={<Signup />} />
         <Route path="/AdminLogin" element={<AdminLogin />} />
         <Route path="/Main" element={<Main />} />
+        <Route path="/User" element={<User />} />
         <Route path="/addMenuItem" element={<AddMenuItem />} />
         <Route path="/userOrders" element={<UserOrders />} />
     </Routes>

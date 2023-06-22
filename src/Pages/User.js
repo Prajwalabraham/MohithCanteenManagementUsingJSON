@@ -50,17 +50,50 @@ function User() {
 
 
   React.useEffect(() => {
-    axios({
-      method:'get',
-      url: 'http://localhost:8080/api/menu',
-    })
-    .then(res => {
-      console.log(res);
-      setMenuItems(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    })
+    setMenuItems([
+      {
+        id: 0,
+        quantity: 1,
+        userId: 1,
+        price:256,
+        menuName: "Something",
+        menuDescription: "Somethign",
+        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      },{
+        id: 0,
+        quantity: 1,
+        userId: 1,
+        price:256,
+        menuName: "Something",
+        menuDescription: "Somethign",
+        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      },{
+        id: 0,
+        quantity: 1,
+        userId: 1,
+        price:256,
+        menuName: "Something",
+        menuDescription: "Somethign",
+        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      },{
+        id: 0,
+        quantity: 1,
+        userId: 1,
+        price:256,
+        menuName: "Something",
+        menuDescription: "Somethign",
+        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      },{
+        id: 0,
+        quantity: 1,
+        userId: 1,
+        price:256,
+        menuName: "Something",
+        menuDescription: "Somethign",
+        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
+      }
+    ])
+  
   }, []);
 
   const handleSubmit = () => {
