@@ -130,7 +130,7 @@ function Login() {
       <Grid container spacing={2}>
         <Grid item xs={5}>
         <Grid item xs={12} style={{marginTop: '50px', marginBottom: '10px'}}>
-        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black">LOGIN :</Typography>
+        <Typography style={{ fontFamily:'Poppins', position:'absolute', marginTop:'5px', marginLeft:'10px'}} variant="h6" color="black"> muki  :</Typography>
                 <TextField
                   id="username"
                   label="Username"

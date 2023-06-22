@@ -50,93 +50,73 @@ function User() {
 
 
   React.useEffect(() => {
-    setMenuItems([
-      {
-        id: 0,
-        quantity: 1,
-        userId: 1,
-        price:256,
-        menuName: "Something",
-        menuDescription: "Somethign",
-        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-      },{
-        id: 0,
-        quantity: 1,
-        userId: 1,
-        price:256,
-        menuName: "Something",
-        menuDescription: "Somethign",
-        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-      },{
-        id: 0,
-        quantity: 1,
-        userId: 1,
-        price:256,
-        menuName: "Something",
-        menuDescription: "Somethign",
-        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-      },{
-        id: 0,
-        quantity: 1,
-        userId: 1,
-        price:256,
-        menuName: "Something",
-        menuDescription: "Somethign",
-        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-      },{
-        id: 0,
-        quantity: 1,
-        userId: 1,
-        price:256,
-        menuName: "Something",
-        menuDescription: "Somethign",
-        image: "https://images.pexels.com/photos/5812094/pexels-photo-5812094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
-      }
-    ])
-  
+    console.log(localStorage.getItem('id'))
+    axios({
+      method:'get',
+      url: 'http://localhost:8080/api/menu',
+    })
+    .then(res => {
+      console.log(res);
+      setMenuItems(res.data);
+    })
+    .catch(err => {
+      console.log(err);
+    })
   }, []);
 
   const handleSubmit = () => {
+    console.log(cartItems)
+    if(cartItems.length<0 || total===0){
+      setSeverity('error')
+      setSuccessMsg('No items in the Cart')
+      setSuccess(true)
+      return
+    }
+    else{
     setIsSubmitLoading(true);
-
     for (let index = 0; index < cartItems.length; index++) {
-      let item = cartItems[index];
-      console.log(item);
-      axios({
-        method:'post',
-        url: 'http://localhost:8080/api/orders/add',
-        data: { 
-          menuId: item.id,
-          quantity: item.quantity,
-          userId: item.userId,
-          price:total,
-          menuName: item.menuName,
-          menuDescription: item.menuDescription,
-          menuPrice: item.quantity * item.menuPrice,
-          image: item.image,
-          username:localStorage.getItem('username'),
-        }
-      })
-      .then(res => {
-        console.log(res);
-        setIsSubmitLoading(false);
-        setIsOpen(false);
-        setCartItems([]);
-        setTotal(0);
-        setSuccess(true);
-        setSuccessMsg('Order Placed Successfully');
-        setSeverity('success');
-      })
-      .catch(err => {
-        console.log(err);
-        setIsSubmitLoading(false);
-        setIsOpen(false);
-        setCartItems([]);
-        setTotal(0);
-        setSuccess(true);
-        setSuccessMsg('Order was not Placed');
-        setSeverity('error');
-      })
+      setTimeout(() => {
+        let item = cartItems[index];
+        console.log(item);
+        axios({
+          method:'post',
+          url: 'http://localhost:8080/api/orders/add',
+          data: { 
+            menuId: item.id,
+            quantity: item.quantity,
+            userId: item.userId,
+            price: total,
+            menuName: item.menuName,
+            menuDescription: item.menuDescription,
+            menuPrice: item.quantity * item.menuPrice,
+            image: item.image,
+            username: localStorage.getItem('username'),
+          }
+        })
+        .then(res => {
+          console.log(res);
+          setIsSubmitLoading(false);
+          setIsOpen(false);
+          setCartItems([]);
+          setTotal(0);
+          setSuccess(true);
+          setSuccessMsg('Order Placed Successfully');
+          setSeverity('success');
+        })
+        .catch(async err => {
+          console.log(err);
+          setIsSubmitLoading(false);
+          setIsOpen(false);
+          setCartItems([]);
+          setTotal(0);
+          setSuccess(true);
+          await setSeverity('error');
+          setSuccessMsg('Order was not Placed');
+        });
+      }, index * 1000);
+    }
+    
+    setIsSubmitLoading(false);
     }
   }
 
@@ -178,7 +158,7 @@ function User() {
   let totalPrice = 0;
   return (
     <>
-        <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={success} autoHideDuration={6000} onClose={handleClose}>
       <Alert onClose={handleClose} severity={severity} sx={{ width: '100%', background:'#4BB543' }}>
         {successMsg}
       </Alert>
