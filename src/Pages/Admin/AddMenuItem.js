@@ -182,6 +182,7 @@ function AddMenuItem() {
         .delete(`http://localhost:8080/api/menu/${id}`)
         .then((response) => {
           console.log('Menu item deleted successfully!');
+          window.location.reload();
           // Handle any additional logic or UI updates
         })
         .catch((error) => {
